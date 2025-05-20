@@ -1,0 +1,31 @@
+packages:
+  waveshare_base: !include main.yaml
+
+substitutions:
+  backlight_brightness_pin: "GPIO16"
+  initial_brightness: "0.5"
+
+output:
+  - platform: ledc
+    pin: ${backlight_brightness_pin}
+    id: backlight_brightness_output
+
+light:
+  - id: !extend lcdbacklight
+    internal: true
+  - platform: monochromatic
+    output: backlight_brightness_output
+    id: lcdbacklight_brightness
+    name: LCD Backlight
+    icon: mdi:wall-sconce-flat-outline
+    disabled_by_default: true
+    restore_mode: ALWAYS_ON
+    initial_state:
+      brightness: ${initial_brightness}
+    on_turn_off:
+      - delay: 5min
+      - logger.log: Starting automatic antiburn.
+      - switch.turn_on: switch_antiburn
+    on_turn_on:
+      - switch.turn_off: switch_antiburn
+

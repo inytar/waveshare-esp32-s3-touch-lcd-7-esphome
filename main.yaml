@@ -1,0 +1,156 @@
+esphome:
+  platformio_options:
+    build_flags: "-DBOARD_HAS_PSRAM"
+    board_build.arduino.memory_type: qio_opi
+    board_build.flash_mode: dio
+    board_upload.maximum_ram_size: 524288
+
+psram:
+  mode: octal
+  speed: 120MHz
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: ESP32S3
+  flash_size: 8MB
+  framework:
+    type: esp-idf
+    advanced:
+      enable_idf_experimental_features: true
+    sdkconfig_options:
+      COMPILER_OPTIMIZATION_SIZE: y
+      CONFIG_ESP32S3_DATA_CACHE_64KB: "y"
+      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: "y"
+      CONFIG_FREERTOS_HZ: "1000"
+      CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240: y
+      CONFIG_ESPTOOLPY_FLASHMODE_QIO: y
+      CONFIG_ESPTOOLPY_FLASHFREQ_120M: y
+      CONFIG_SPIRAM_MODE_OCT: y
+      CONFIG_IDF_EXPERIMENTAL_FEATURES: y
+      CONFIG_SPIRAM_SPEED_120M: y
+      CONFIG_SPIRAM_FETCH_INSTRUCTIONS: y
+      CONFIG_SPIRAM_RODATA: y
+      CONFIG_ESP32S3_DATA_CACHE_LINE_64B: y
+      CONFIG_COMPILER_OPTIMIZATION_PERF: y
+
+i2c:
+  sda: GPIO08
+  scl: GPIO09
+  scan: True
+  id: bus_a
+
+ch422g:
+  - id: ch422g_hub
+
+output:
+  - platform: gpio
+    id: lcdbacklight_output
+    pin:
+      ch422g: ch422g_hub
+      number: 2
+      mode:
+        output: true
+      inverted: false
+
+light:
+  - platform: binary
+    output: lcdbacklight_output
+    id: lcdbacklight
+    name: LCD Backlight
+    icon: mdi:wall-sconce-flat-outline
+    disabled_by_default: true
+    restore_mode: ALWAYS_ON
+    on_turn_off:
+      - delay: 5min
+      - logger.log: Starting automatic antiburn.
+      - switch.turn_on: switch_antiburn
+    on_turn_on:
+      - switch.turn_off: switch_antiburn
+
+switch:
+  - platform: template
+    name: Antiburn
+    id: switch_antiburn
+    icon: mdi:television-shimmer
+    optimistic: true
+    entity_category: "config"
+    disabled_by_default: true
+    turn_on_action:
+      - logger.log: "Starting Antiburn"
+      - if:
+          condition: lvgl.is_paused
+          then:
+            - lvgl.resume:
+            - lvgl.widget.redraw:
+      - lvgl.pause:
+          show_snow: true
+    turn_off_action:
+      - logger.log: "Stopping Antiburn"
+      - if:
+          condition: lvgl.is_paused
+          then:
+            - lvgl.resume:
+            - lvgl.widget.redraw:
+
+lvgl:
+
+### Display
+display:
+  - platform: rpi_dpi_rgb
+    id: waveshare_display
+    update_interval: never
+    auto_clear_enabled: false
+    color_order: RGB
+    pclk_frequency: 16MHZ
+    dimensions:
+      width: 800
+      height: 480
+    de_pin:
+      number: 5
+    hsync_pin:
+      number: 46
+      ignore_strapping_warning: true
+    vsync_pin:
+      number: 3
+      ignore_strapping_warning: true
+    pclk_pin: 7
+    pclk_inverted: true
+    reset_pin:
+      ch422g: ch422g_hub
+      number: 3
+    hsync_back_porch: 8
+    hsync_front_porch: 8
+    hsync_pulse_width: 4
+    vsync_back_porch: 16
+    vsync_front_porch: 16
+    vsync_pulse_width: 4
+    data_pins:
+      red:
+        - 1         #r3
+        - 2         #r4
+        - 42        #r5
+        - 41        #r6
+        - 40        #r7
+      blue:
+        - 14        #b3
+        - 38        #b4
+        - 18        #b5
+        - 17        #b6
+        - 10        #b7
+      green:
+        - 39        #g2
+        - 0         #g3
+        - 45        #g4
+        - 48        #g5
+        - 47        #g6
+        - 21        #g7
+
+### Touchscreen
+touchscreen:
+  platform: gt911
+  id: waveshare_touch
+  interrupt_pin: GPIO4
+  reset_pin:
+    ch422g: ch422g_hub
+    number: 1
+    mode: OUTPUT
