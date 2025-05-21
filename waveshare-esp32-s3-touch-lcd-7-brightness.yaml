@@ -1,5 +1,5 @@
 packages:
-  waveshare_base: !include main.yaml
+  waveshare_base: !include waveshare-esp32-s3-touch-lcd-7.yaml
 
 substitutions:
   backlight_brightness_pin: "GPIO16"
