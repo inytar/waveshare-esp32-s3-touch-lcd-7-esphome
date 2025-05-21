@@ -1,0 +1,72 @@
+packages:
+  common: !include common.yaml
+  waveshare:
+    url: https://github.com/inytar/waveshare-esp32-s3-touch-lcd-7-esphome
+    files: 
+      - path: waveshare-esp32-s3-touch-lcd-7-brightness.yaml
+        vars:
+          initial_brightness: "0.8"
+    refresh: 1min  # This is short here for testing & debugging, I suggest leaving it to it's default.
+
+esphome:
+  name: waveshare-lcd7-clock-bn-demo
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    on_time_sync:
+      - script.execute: time_update
+    on_time:
+      - seconds: 0
+        then:
+          - script.execute: time_update
+      # Stupid automation to show the brightness changing.
+      - seconds: /5
+        then:
+          - script.execute: update_brightness
+      # Turn off the screen at 2 at night. The package makes sure to run the antiburn when the
+      # screen is off automatically, but you do need to remember to turn the screen off.
+      - seconds: 0
+        minutes: 0
+        hours: 2
+        then:
+          - script.execute: display_off
+      - seconds: 0
+        minutes: 0
+        hours: 6
+        then:
+          - script.execute: display_on
+
+
+lvgl:
+  widgets:
+    - label:
+        id: clock_label
+        align: CENTER
+        text_font: montserrat_48
+        text:
+          time_format: "%H:%M"
+
+script:
+  - id: time_update
+    then:
+      - lvgl.label.update:
+          id: clock_label
+          text:
+            time_format: "%H:%M"
+  - id: display_off
+    then:
+      - light.turn_off: lcdbacklight_brightness
+  - id: display_on
+    then:
+      - light.turn_on: lcdbacklight_brightness
+  - id: update_brightness
+    then:
+      - if:
+          condition:
+            light.is_on: lcdbacklight_brightness
+          then:
+            - light.control:
+                id: lcdbacklight_brightness
+                brightness: !lambda return ( id(homeassistant_time).now().second + 30.0 ) / 100.0 ;
+          
