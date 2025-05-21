@@ -1,0 +1,53 @@
+packages:
+  common: !include common.yaml
+  waveshare: 
+    url: https://github.com/inytar/waveshare-esp32-s3-touch-lcd-7-esphome
+    files: [ waveshare-esp32-s3-touch-lcd-7.yaml ]
+    refresh: 1min  # This is short here for testing & debugging, I suggest leaving it to it's default.
+
+esphome:
+  name: waveshare-lcd7-clock-demo
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    on_time_sync:
+      - script.execute: time_update
+    on_time:
+      - seconds: 0
+        then:
+          - script.execute: time_update
+      - seconds: 0
+        minutes: 0
+        hours: 2
+        then:
+          - script.execute: display_off
+      - seconds: 0
+        minutes: 0
+        hours: 6
+        then:
+          - script.execute: display_on
+
+
+lvgl:
+  widgets:
+    - label:
+        id: clock_label
+        align: CENTER
+        text_font: montserrat_48
+        text:
+          time_format: "%H:%M"
+
+script:
+  - id: time_update
+    then:
+      - lvgl.label.update:
+          id: clock_label
+          text:
+            time_format: "%H:%M"
+  - id: display_off
+    then:
+      - light.turn_off: lcdbacklight
+  - id: display_on
+    then:
+      - light.turn_on: lcdbacklight
