@@ -17,6 +17,8 @@ time:
       - seconds: 0
         then:
           - script.execute: time_update
+      # Turn off the screen at 2 at night. The package makes sure to run the antiburn when the
+      # screen is off automatically, but you do need to remember to turn the screen off.
       - seconds: 0
         minutes: 0
         hours: 2
