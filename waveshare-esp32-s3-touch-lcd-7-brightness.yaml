@@ -13,6 +13,7 @@ output:
 light:
   - id: !extend lcdbacklight
     internal: true
+    name: !remove
   - platform: monochromatic
     output: backlight_brightness_output
     id: lcdbacklight_brightness
@@ -28,4 +29,3 @@ light:
       - switch.turn_on: switch_antiburn
     on_turn_on:
       - switch.turn_off: switch_antiburn
-
