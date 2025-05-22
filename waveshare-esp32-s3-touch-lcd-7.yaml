@@ -11,6 +11,7 @@ psram:
 
 esp32:
   board: esp32-s3-devkitc-1
+  min_version: "2025.4.2"
   variant: ESP32S3
   flash_size: 8MB
   framework:

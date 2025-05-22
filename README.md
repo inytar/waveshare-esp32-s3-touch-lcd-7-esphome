@@ -33,7 +33,7 @@ Once you've done that you can use the [`waveshare-esp32-s3-touch-lcd-7-brightnes
 The `brightness` file has three variables you can set:
 - `backlight_brightness_pin`: defaults to `GPIO16`, which is the one I've used in the image above. If you have  soldered the testpoint to another pin you'll need to give the correct one here.
 - `initial_brightness`: Set the brightness of the display on boot (float between `0.0` and `1.0`, defaults to `0.8`).
-- `min_power`: I've noticed that my display will be dark for a large part of the brightness range, to fix this I set this variable (float between `0.0` and `1.0`, defaults to `0.055`).
+- `min_power`: I've noticed that my display will be dark for a large part of the brightness range, to fix this I set this variable (float between `0.0` and `1.0`, defaults to `0.07`).
 
 If you set these variables make sure to quote the floats, else things might break.
 
