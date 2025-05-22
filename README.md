@@ -40,3 +40,12 @@ If you set these variables make sure to quote the floats, else things might brea
 Using the brightness file adds a new `light.lcdbacklight_brightness` now you can use this to change the backlight brightness and turn on/off the backlight. You __don't__ need to care about `light.lcdbacklight` anymore and can keep it on all the time.
 
 The exposed LCD Backlight in Home Assistant will now also allow you to change the brightness of the display.
+
+# Thank you
+
+I'd like to thank everyone in the [main thread on the display](https://community.home-assistant.io/t/waveshare-esp32-s3-touch-lcd-7/789584) and in the [thread on brightness adjustment](https://community.home-assistant.io/t/esp32-s3-7inch-capacitive-touch-display-adjust-brightness/771030), who did the main work of figuring everything out around this display.
+
+I'd especially like to thank:
+- [`runevad`](https://community.home-assistant.io/u/runevad/summary) from whom I got most of the display code
+- [`plplaaa2`](https://community.home-assistant.io/u/plplaaa2/summary) who seems to have first found out how to get brightness adjustment working
+- [`pkscout`](https://community.home-assistant.io/u/pkscout/summary) for his detailed posts on how to setup the brightness adjustment both in the hardware and software
