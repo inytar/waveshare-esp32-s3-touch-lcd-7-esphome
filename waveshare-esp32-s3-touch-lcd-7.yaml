@@ -74,7 +74,7 @@ script:
       - switch.turn_on: switch_antiburn
   - id: stop_antiburn
     then:
-      - script.stop: antiburn
+      - script.stop: start_antiburn
       - switch.turn_off: switch_antiburn
 
 switch:
