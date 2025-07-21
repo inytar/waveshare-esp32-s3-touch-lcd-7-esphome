@@ -17,6 +17,8 @@ light:
   - id: !extend lcdbacklight
     internal: true
     name: !remove
+    on_turn_on: !remove
+    on_turn_off: !remove
   - platform: monochromatic
     output: backlight_brightness_output
     id: lcdbacklight_brightness
@@ -27,8 +29,6 @@ light:
     initial_state:
       brightness: ${initial_brightness}
     on_turn_off:
-      - delay: 5min
-      - logger.log: Starting automatic antiburn.
-      - switch.turn_on: switch_antiburn
+      - script.execute: start_antiburn
     on_turn_on:
-      - switch.turn_off: switch_antiburn
+      - script.execute: stop_antiburn

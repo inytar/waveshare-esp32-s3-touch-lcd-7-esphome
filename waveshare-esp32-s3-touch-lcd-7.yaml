@@ -62,10 +62,19 @@ light:
     disabled_by_default: true
     restore_mode: ALWAYS_ON
     on_turn_off:
+      - script.execute: start_antiburn
+    on_turn_on:
+      - script.execute: stop_antiburn
+
+script:
+  - id: start_antiburn
+    then:
       - delay: 5min
       - logger.log: Starting automatic antiburn.
       - switch.turn_on: switch_antiburn
-    on_turn_on:
+  - id: stop_antiburn
+    then:
+      - script.stop: antiburn
       - switch.turn_off: switch_antiburn
 
 switch:
