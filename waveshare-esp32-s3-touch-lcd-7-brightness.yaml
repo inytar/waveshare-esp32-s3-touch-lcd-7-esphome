@@ -17,8 +17,6 @@ light:
   - id: !extend lcdbacklight
     internal: true
     name: !remove
-    on_turn_on: !remove
-    on_turn_off: !remove
   - platform: monochromatic
     output: backlight_brightness_output
     id: lcdbacklight_brightness
