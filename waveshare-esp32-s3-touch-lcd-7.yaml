@@ -1,7 +1,5 @@
 esphome:
-  min_version: "2025.8.0"
-  platformio_options:
-    board_upload.maximum_ram_size: 524288
+  min_version: "2026.1.0"
 
 psram:
   mode: octal
@@ -15,6 +13,7 @@ esp32:
     type: esp-idf
     advanced:
       enable_idf_experimental_features: true
+      flash_chip: gd
 
 i2c:
   sda: GPIO08
@@ -93,50 +92,11 @@ display:
     id: waveshare_display
     update_interval: never
     auto_clear_enabled: false
-    color_order: RGB
-    pclk_frequency: 16MHZ
-    dimensions:
-      width: 800
-      height: 480
-    de_pin:
-      number: 5
-    hsync_pin:
-      number: 46
-      ignore_strapping_warning: true
-    vsync_pin:
-      number: 3
-      ignore_strapping_warning: true
-    pclk_pin: 7
-    pclk_inverted: true
-    reset_pin:
+    # Workaround for issue: https://github.com/esphome/esphome/issues/21379.
+    # Whould only be an issue in 2026.10
+    enable_pin:
       ch422g: ch422g_hub
-      number: 3
-    hsync_back_porch: 8
-    hsync_front_porch: 8
-    hsync_pulse_width: 4
-    vsync_back_porch: 16
-    vsync_front_porch: 16
-    vsync_pulse_width: 4
-    data_pins:
-      red:
-        - 1         #r3
-        - 2         #r4
-        - 42        #r5
-        - 41        #r6
-        - 40        #r7
-      blue:
-        - 14        #b3
-        - 38        #b4
-        - 18        #b5
-        - 17        #b6
-        - 10        #b7
-      green:
-        - 39        #g2
-        - 0         #g3
-        - 45        #g4
-        - 48        #g5
-        - 47        #g6
-        - 21        #g7
+      number: 6
 
 ### Touchscreen
 touchscreen:
