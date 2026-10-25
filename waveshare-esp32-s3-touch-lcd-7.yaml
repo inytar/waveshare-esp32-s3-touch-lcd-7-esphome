@@ -13,6 +13,7 @@ esp32:
     type: esp-idf
     advanced:
       enable_idf_experimental_features: true
+      flash_chip: gd
 
 i2c:
   sda: GPIO08
